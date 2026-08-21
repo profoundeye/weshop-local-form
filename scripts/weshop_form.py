@@ -62,6 +62,7 @@ MINIMAL_AGENT_REQUIRED_KEYS = {
 MINIMAL_AGENT_PRESETS = {
     "z-image": "z-image",
     "qwen-edit": "qwen-edit",
+    "qwen-image-edit": "qwen-edit",
 }
 
 UI_DEFAULTS = {

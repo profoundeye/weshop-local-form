@@ -1,8 +1,8 @@
 ---
 name: weshop-local-form
-description: Install and launch a localized WeShop web form from a compact agentName request or JSON/YAML embedded in prose, including z-image and qwen-edit, while securely handling an API key and bootstrapping dependencies. Use for a one-message fixed-model WeShop UI on any Agent Skills-compatible host; use weshop-cli-skill for direct CLI-only generation.
+description: Install and launch a localized WeShop web form from a compact agentName request or JSON/YAML embedded in prose, including z-image, qwen-edit, and qwen-image-edit, while securely handling an API key and bootstrapping dependencies. Use for a one-message fixed-model WeShop UI on any Agent Skills-compatible host; use weshop-cli-skill for direct CLI-only generation.
 metadata:
-  version: "1.6.0"
+  version: "1.6.1"
   portable-entrypoint: "scripts/start_from_text.py"
   agent-skills-spec: "https://agentskills.io/specification"
   compatibility: "Python 3.10+, long-running local processes, network/user-cache write access, and localhost URL presentation; Node.js/npm/weshop-cli bootstrap on macOS, Linux, and Windows x64/arm64."
@@ -23,7 +23,7 @@ safeGenerate: off apiKey:<YOUR_WESHOP_API_KEY>
 
 Recognize the same repository URL whether it is plain text or a Markdown link. Treat `safeGenerate` as a strict launcher-contract marker, not a CLI flag: require `off`, remove the API key in memory, and map the request to the immutable `z-image` preset. The legacy `resultBase64: true` marker remains optional for compatibility. Never forward either marker to the CLI.
 
-After installation, `agentName: qwen-edit` with `safeGenerate: off` maps to the immutable `qwen-edit` form and CLI command `qwen-image-edit`. Reject the misspelling `safeGenerat` with a correction message.
+After installation, `agentName: qwen-image-edit` or its short alias `qwen-edit`, with `safeGenerate: off`, maps to the immutable `qwen-edit` form and CLI command `qwen-image-edit`. Reject the misspelling `safeGenerat` with a correction message.
 
 ## Portable execution contract
 

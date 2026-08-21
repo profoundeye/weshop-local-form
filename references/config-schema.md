@@ -21,10 +21,10 @@ apiKey:<YOUR_WESHOP_API_KEY>
 
 An empty input also selects `qwen-edit` when `WESHOP_API_KEY` already exists in the environment.
 
-After installation, Qwen Edit uses the shorter request below:
+After installation, Qwen Edit accepts the CLI-aligned name below:
 
 ```text
-agentName: qwen-edit
+agentName: qwen-image-edit
 safeGenerate: off apiKey:<YOUR_WESHOP_API_KEY>
 ```
 
@@ -33,6 +33,7 @@ Only `safeGenerate` is accepted. The misspelling `safeGenerat` is rejected with 
 | agentName | Fixed form preset | CLI command |
 |---|---|---|
 | `z-image` | `z-image` | `z-image` |
+| `qwen-image-edit` | `qwen-edit` | `qwen-image-edit` |
 | `qwen-edit` | `qwen-edit` | `qwen-image-edit` |
 
 The same minimal request can use YAML:
