@@ -52,12 +52,16 @@ PRESET_REQUEST_KEYS = {
 }
 MINIMAL_AGENT_REQUEST_KEYS = {
     "agentName",
+    "safeGenerate",
     "safeGenerat",
     "resultBase64",
 }
 MINIMAL_AGENT_REQUIRED_KEYS = {
     "agentName",
-    "safeGenerat",
+}
+MINIMAL_AGENT_PRESETS = {
+    "z-image": "z-image",
+    "qwen-edit": "qwen-edit",
 }
 
 UI_DEFAULTS = {
@@ -159,7 +163,8 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
         extra = set(request) - MINIMAL_AGENT_REQUEST_KEYS
         if extra:
             raise ConfigError(
-                "minimal agent requests accept only agentName, safeGenerat, resultBase64, "
+                "minimal agent requests accept only agentName, safeGenerate/safeGenerat, "
+                "resultBase64, "
                 "and a recognized API-key field; unsupported keys: "
                 + ", ".join(sorted(extra))
             )
@@ -168,13 +173,18 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
             raise ConfigError(
                 "minimal agent request is missing: " + ", ".join(sorted(missing))
             )
-        if request["agentName"] != "z-image":
-            raise ConfigError("minimal agent request currently requires agentName 'z-image'")
-        if request["safeGenerat"] != "off":
-            raise ConfigError("minimal agent request requires safeGenerat to be the string 'off'")
+        preset_id = MINIMAL_AGENT_PRESETS.get(request["agentName"])
+        if preset_id is None:
+            available = ", ".join(sorted(MINIMAL_AGENT_PRESETS))
+            raise ConfigError(f"unsupported agentName; available agents: {available}")
+        safe_keys = [key for key in ("safeGenerate", "safeGenerat") if key in request]
+        if len(safe_keys) != 1:
+            raise ConfigError("minimal agent request requires exactly one safeGenerate field")
+        if request[safe_keys[0]] != "off":
+            raise ConfigError("minimal agent request requires safeGenerate to be the string 'off'")
         if "resultBase64" in request and request["resultBase64"] is not True:
             raise ConfigError("minimal agent request requires resultBase64 to be true")
-        request = {"version": 1, "formPreset": "z-image"}
+        request = {"version": 1, "formPreset": preset_id}
     if request.get("version") != 1:
         raise ConfigError("version must be 1")
     extra = set(request) - PRESET_REQUEST_KEYS

@@ -144,6 +144,19 @@
         {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
       ]
     },
+    "qwen-edit": {
+      "title": "Qwen Image Edit 图像生成与编辑",
+      "locale": "zh-CN",
+      "description": "通过自然语言生成或编辑图像；可选上传最多 5 张参考图片。",
+      "command": "qwen-image-edit",
+      "cliVersion": "0.2.9",
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true, "placeholder": "描述要生成的图像，或如何编辑参考图片"},
+        {"name": "images", "label": "参考图片（最多 5 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 5},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
     "kling-3": {
       "title": "Kling 3.0 视频生成",
       "locale": "zh-CN",

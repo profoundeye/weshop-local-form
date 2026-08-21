@@ -2,7 +2,7 @@
 
 The user supplies a small UTF-8 JSON object or safe YAML-subset mapping. The request selects a fixed form from [model-forms.json](model-forms.json); it never defines the form structure itself. Two input modes are supported.
 
-## Minimal Z-Image mode
+## Minimal agent mode
 
 This is the shortest install-and-launch format; the repository URL may be plain text or a Markdown link:
 
@@ -11,7 +11,21 @@ This is the shortest install-and-launch format; the repository URL may be plain 
 safeGenerat: off apiKey:<YOUR_WESHOP_API_KEY>
 ```
 
-`agentName`, `safeGenerat`, and the API key are required. The launcher removes the key in memory and normalizes the request to `version: 1` plus `formPreset: z-image`. `safeGenerat` is a compatibility marker and is not passed to the WeShop CLI. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted. Form or CLI overrides remain rejected.
+`agentName`, exactly one safe-generation marker, and the API key are required. The launcher removes the key in memory and maps the agent name to a fixed preset. The marker is not passed to the WeShop CLI. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted. Form or CLI overrides remain rejected.
+
+After installation, Qwen Edit uses the shorter request below:
+
+```text
+agentName: qwen-edit
+safeGenerate: off apiKey:<YOUR_WESHOP_API_KEY>
+```
+
+Both `safeGenerate` and the legacy spelling `safeGenerat` are accepted, but exactly one must be supplied. They are launcher markers and are never passed to the CLI.
+
+| agentName | Fixed form preset | CLI command |
+|---|---|---|
+| `z-image` | `z-image` | `z-image` |
+| `qwen-edit` | `qwen-edit` | `qwen-image-edit` |
 
 The same minimal request can use YAML:
 
@@ -50,6 +64,7 @@ Any `command`, `fields`, `fixedArgs`, title, label, flag, enum, UI override, or 
 | `seedream-5-3k` | Seedream 5.0, `image-size=3K` | Curated high-resolution delivery |
 | `midjourney-v7` | `model=Midjourney_7` | Text-to-image art and illustration |
 | `z-image` | Z-Image | Text-to-image photorealism and Chinese cultural elements |
+| `qwen-edit` | Qwen Image Edit | Text-to-image generation and editing with up to 5 references |
 | `kling-3` | `model=Kling_3_0` | First/last-frame video with optional audio |
 | `kling-v3-omni` | `model=Kling_V3_Omni` | Multimodal reference video generation |
 | `minimax-h3-reference` | `model=MiniMax_H3_Reference` | Images plus hosted video/audio references |

@@ -12,9 +12,8 @@ from typing import Any
 
 
 FENCE_RE = re.compile(r"```(?:json|yaml|yml)?\s*\n(.*?)```", re.DOTALL | re.IGNORECASE)
-INSTALL_REPO_URL = "https://github.com/profoundeye/weshop-local-form.git"
 COMPACT_FIELD_RE = re.compile(
-    r"(?<![A-Za-z0-9_])(agentName|safeGenerat|resultBase64|apiKey|weshopApiKey|WESHOP_API_KEY)\s*:\s*"
+    r"(?<![A-Za-z0-9_])(agentName|safeGenerate|safeGenerat|resultBase64|apiKey|weshopApiKey|WESHOP_API_KEY)\s*:\s*"
 )
 COMPACT_FORBIDDEN_RE = re.compile(
     r"(?<![A-Za-z0-9_])(command|fields|fixedArgs|formPreset|defaults|locale|version)\s*:",
@@ -255,9 +254,7 @@ def pop_api_key(config: dict) -> str | None:
 
 
 def parse_compact_install_request(text: str) -> tuple[dict, str | None] | None:
-    """Parse the documented one-line install-and-launch request without persisting its key."""
-    if INSTALL_REPO_URL not in text:
-        return None
+    """Parse a documented compact agent request without persisting its key."""
     if COMPACT_FORBIDDEN_RE.search(text):
         raise ParseError("compact install request may not contain form or CLI overrides")
     matches = list(COMPACT_FIELD_RE.finditer(text))
@@ -267,7 +264,12 @@ def parse_compact_install_request(text: str) -> tuple[dict, str | None] | None:
     for index, match in enumerate(matches):
         key = match.group(1)
         normalized = normalize_secret_key(key)
-        canonical = "apiKey" if normalized in SECRET_KEYS else key
+        if normalized in SECRET_KEYS:
+            canonical = "apiKey"
+        elif key in {"safeGenerate", "safeGenerat"}:
+            canonical = "safeGenerat"
+        else:
+            canonical = key
         if canonical in values:
             raise ParseError(f"compact install request contains duplicate {canonical}")
         end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
