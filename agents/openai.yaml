@@ -1,0 +1,4 @@
+interface:
+  display_name: "WeShop 本地表单"
+  short_description: "从固定模型预设启动本地化 WeShop 图像和视频表单"
+  default_prompt: "Use $weshop-local-form to start the fixed WeShop model form selected by the following preset request."

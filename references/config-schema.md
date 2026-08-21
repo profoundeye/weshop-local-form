@@ -1,0 +1,102 @@
+# Preset request schema
+
+The user supplies a small UTF-8 JSON object or safe YAML-subset mapping. The request selects a fixed form from [model-forms.json](model-forms.json); it never defines the form structure itself. Two input modes are supported.
+
+## Minimal Z-Image mode
+
+This is the shortest invocation format:
+
+```json
+{
+  "agentName": "z-image",
+  "safeGenerat": "off",
+  "resultBase64": true,
+  "apiKey": "<YOUR_WESHOP_API_KEY>"
+}
+```
+
+All three non-secret keys are required and accept only the values shown. The launcher removes the recognized API-key field in memory and normalizes the remaining request to `version: 1` plus `formPreset: z-image`. `safeGenerat` and `resultBase64` are compatibility markers for launching the fixed form; they are not passed to the WeShop CLI. Unknown keys, another `agentName`, string `"true"`, or another `safeGenerat` value are rejected.
+
+The same minimal request can use YAML:
+
+```yaml
+agentName: z-image
+safeGenerat: off
+resultBase64: true
+apiKey: <YOUR_WESHOP_API_KEY>
+```
+
+## General preset mode
+
+### Accepted keys
+
+| Key | Required | Meaning |
+|---|---:|---|
+| `version` | yes | Must be `1`. |
+| `formPreset` | yes | Exact preset ID from the table below. |
+| `locale` | no | Currently `zh-CN`; each preset fixes its supported locale. |
+| `defaults` | no | Initial values keyed by existing preset field name. Unknown fields and file defaults are rejected. |
+| `timeoutSeconds` | no | Total execution and polling timeout, `30`–`7200`. |
+| `pollSeconds` | no | Async polling interval, `1`–`30`. |
+| `apiKey` | no | One-run WeShop API key. Also accepted as `weshopApiKey`, `WESHOP_API_KEY`, or under `secrets`/`env`; removed before preset resolution. |
+
+Any `command`, `fields`, `fixedArgs`, title, label, flag, enum, UI override, or unknown top-level key is rejected. This prevents prose interpretation from changing the CLI contract.
+
+### Fixed presets
+
+| Preset ID | Fixed CLI model/tier | Purpose |
+|---|---|---|
+| `gpt-image-low` | GPT Image 2, `quality=low` | Low-cost validation and drafts |
+| `gpt-image-medium` | GPT Image 2, `quality=medium` | Routine delivery, readable text, translation |
+| `gpt-image-high` | GPT Image 2, `quality=high` | Complex final delivery |
+| `nano-banana-pro` | `model=nano` | Composition convergence and review |
+| `nano-banana-2` | `model=nano2` | Fast batch divergence |
+| `seedream-5-2k` | Seedream 5.0, `image-size=2K` | Routine high-lighting/Asian-aesthetic output |
+| `seedream-5-3k` | Seedream 5.0, `image-size=3K` | Curated high-resolution delivery |
+| `midjourney-v7` | `model=Midjourney_7` | Text-to-image art and illustration |
+| `z-image` | Z-Image | Text-to-image photorealism and Chinese cultural elements |
+| `kling-3` | `model=Kling_3_0` | First/last-frame video with optional audio |
+| `kling-v3-omni` | `model=Kling_V3_Omni` | Multimodal reference video generation |
+| `minimax-h3-reference` | `model=MiniMax_H3_Reference` | Images plus hosted video/audio references |
+| `seedance-2` | `model=Seedance_20` | Multi-image 4–15 second video |
+| `seedance-2-5` | `model=Seedance_25` | Native 4–30 second multimodal video |
+
+The catalog is verified against `weshop-cli 0.2.9`. A model not listed here is intentionally unsupported until a fixed preset is added and `scripts/validate_presets.py --check-cli` passes.
+
+### JSON example
+
+```json
+{
+  "version": 1,
+  "formPreset": "seedance-2-5",
+  "apiKey": "<YOUR_WESHOP_API_KEY>",
+  "locale": "zh-CN",
+  "defaults": {
+    "prompt": "产品缓慢旋转，柔和轮廓光，镜头平稳推进",
+    "duration": "8s",
+    "aspectRatio": "16:9",
+    "generateAudio": "true",
+    "batch": 1
+  }
+}
+```
+
+### YAML example
+
+```yaml
+version: 1
+formPreset: gpt-image-medium
+WESHOP_API_KEY: <YOUR_WESHOP_API_KEY>
+locale: zh-CN
+defaults:
+  prompt: 白色无缝背景中的专业产品摄影，柔和阴影
+  aspectRatio: 1:1
+  imageSize: 2K
+  batch: 1
+```
+
+The API-key placeholder only illustrates placement. Do not store a real key in reusable examples or sanitized configurations.
+
+## Supported YAML subset
+
+YAML input supports indentation-based mappings and lists, quoted or plain scalars, booleans, nulls, numbers, comments, and inline arrays/objects written with JSON syntax. It rejects executable tags, anchors, aliases, tab indentation, and multiline block scalars.

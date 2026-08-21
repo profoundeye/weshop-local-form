@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "verifiedWith": "weshop-cli 0.2.9",
+  "verifiedAt": "2026-08-21",
+  "presets": {
+    "gpt-image-low": {
+      "title": "GPT Image 2 · Low 图像生成",
+      "locale": "zh-CN",
+      "description": "低成本验证、草稿和基础图像编辑。最多 5 张参考图。",
+      "command": "gpt-image",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--quality", "low"],
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true, "placeholder": "描述要生成的图像，或如何编辑参考图"},
+        {"name": "images", "label": "参考图片（最多 5 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 5},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "3:4", "options": ["auto", "1:1", "2:3", "3:2", "4:3", "3:4", "16:9", "9:16", "21:9"]},
+        {"name": "imageSize", "label": "分辨率", "type": "select", "flag": "--image-size", "default": "1K", "options": ["1K", "2K", "4K"]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "gpt-image-medium": {
+      "title": "GPT Image 2 · Medium 图像生成",
+      "locale": "zh-CN",
+      "description": "常规交付、可读文字、多语言和图像翻译的默认预设。最多 5 张参考图。",
+      "command": "gpt-image",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--quality", "medium"],
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true, "placeholder": "描述图像内容、文字、版式或编辑要求"},
+        {"name": "images", "label": "参考图片（最多 5 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 5},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "3:4", "options": ["auto", "1:1", "2:3", "3:2", "4:3", "3:4", "16:9", "9:16", "21:9"]},
+        {"name": "imageSize", "label": "分辨率", "type": "select", "flag": "--image-size", "default": "1K", "options": ["1K", "2K", "4K"]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "gpt-image-high": {
+      "title": "GPT Image 2 · High 图像生成",
+      "locale": "zh-CN",
+      "description": "复杂高质量最终交付。建议仅在 Medium 无法满足验收时使用。",
+      "command": "gpt-image",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--quality", "high"],
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true, "placeholder": "详细描述最终图像及验收要求"},
+        {"name": "images", "label": "参考图片（最多 5 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 5},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "3:4", "options": ["auto", "1:1", "2:3", "3:2", "4:3", "3:4", "16:9", "9:16", "21:9"]},
+        {"name": "imageSize", "label": "分辨率", "type": "select", "flag": "--image-size", "default": "2K", "options": ["1K", "2K", "4K"]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "nano-banana-pro": {
+      "title": "Nano Banana Pro 图像生成与编辑",
+      "locale": "zh-CN",
+      "description": "构图收敛、内部评审和多图编辑。最多 9 张参考图。",
+      "command": "nano-banana-edit",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--model", "nano"],
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "images", "label": "参考图片（最多 9 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 9},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "auto", "options": ["auto", "1:1", "2:3", "3:2", "4:3", "3:4", "4:5", "5:4", "16:9", "9:16", "21:9"]},
+        {"name": "imageSize", "label": "分辨率", "type": "select", "flag": "--image-size", "default": "1K", "options": ["1K", "2K", "4K"]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "nano-banana-2": {
+      "title": "Nano Banana 2 图像生成与编辑",
+      "locale": "zh-CN",
+      "description": "快速批量发散、草稿和多图编辑。最多 9 张参考图。",
+      "command": "nano-banana-edit",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--model", "nano2"],
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "images", "label": "参考图片（最多 9 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 9},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "auto", "options": ["auto", "1:1", "2:3", "3:2", "4:3", "3:4", "4:5", "5:4", "16:9", "9:16", "21:9", "1:4", "4:1", "1:8", "8:1"]},
+        {"name": "imageSize", "label": "分辨率", "type": "select", "flag": "--image-size", "default": "1K", "options": ["1K", "2K", "4K"]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "seedream-5-2k": {
+      "title": "Seedream 5.0 · 2K 图像生成与编辑",
+      "locale": "zh-CN",
+      "description": "适合高光影要求或亚洲审美的常规 2K 交付。最多 14 张参考图。",
+      "command": "seedream",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--image-size", "2K"],
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "images", "label": "参考图片（最多 14 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 14},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "3:4", "options": ["1:1", "2:3", "3:2", "4:3", "3:4", "16:9", "9:16", "21:9"]},
+        {"name": "outputFormat", "label": "输出格式", "type": "select", "flag": "--output-format", "default": "jpeg", "options": ["jpeg", "png"]},
+        {"name": "tool", "label": "提示词增强工具", "type": "select", "flag": "--tool", "default": "", "options": [{"value": "", "label": "不启用"}, {"value": "web_search", "label": "启用网页搜索"}]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "seedream-5-3k": {
+      "title": "Seedream 5.0 · 3K 图像生成与编辑",
+      "locale": "zh-CN",
+      "description": "适合高光影、材质和最终主视觉交付的 3K 预设。最多 14 张参考图。",
+      "command": "seedream",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--image-size", "3K"],
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "images", "label": "参考图片（最多 14 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 14},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "3:4", "options": ["1:1", "2:3", "3:2", "4:3", "3:4", "16:9", "9:16", "21:9"]},
+        {"name": "outputFormat", "label": "输出格式", "type": "select", "flag": "--output-format", "default": "jpeg", "options": ["jpeg", "png"]},
+        {"name": "tool", "label": "提示词增强工具", "type": "select", "flag": "--tool", "default": "", "options": [{"value": "", "label": "不启用"}, {"value": "web_search", "label": "启用网页搜索"}]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "midjourney-v7": {
+      "title": "Midjourney V7 艺术图像生成",
+      "locale": "zh-CN",
+      "description": "纯文本艺术创作、灵感和插画；可选 1 张风格参考图。每次固定返回 4 张图。",
+      "command": "midjourney",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--model", "Midjourney_7"],
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "image", "label": "风格参考图片（可选 1 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "maxFiles": 1},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "1:1", "options": ["1:1", "4:3", "3:4", "16:9", "9:16"]},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "z-image": {
+      "title": "Z-Image 文生图",
+      "locale": "zh-CN",
+      "description": "纯文本写实图像及中国文化元素。该模型不支持参考图片。",
+      "command": "z-image",
+      "cliVersion": "0.2.9",
+      "fields": [
+        {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "1:1", "options": ["1:1", "2:3", "3:2", "4:3", "3:4", "16:9", "9:16", "21:9"]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "kling-3": {
+      "title": "Kling 3.0 视频生成",
+      "locale": "zh-CN",
+      "description": "首帧或首尾帧视频生成，支持 3–15 秒与原生音频。",
+      "command": "kling",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--model", "Kling_3_0"],
+      "fields": [
+        {"name": "images", "label": "首帧与可选尾帧（1–2 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "required": true, "multiple": true, "maxFiles": 2},
+        {"name": "prompt", "label": "动作与镜头提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "duration", "label": "时长", "type": "select", "flag": "--duration", "default": "5s", "options": ["3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s", "11s", "12s", "13s", "14s", "15s"]},
+        {"name": "generateAudio", "label": "生成原生音频", "type": "select", "flag": "--generate-audio", "default": "false", "options": [{"value": "true", "label": "是"}, {"value": "false", "label": "否"}]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "kling-v3-omni": {
+      "title": "Kling V3 Omni 多模态视频生成",
+      "locale": "zh-CN",
+      "description": "支持纯文本、最多 4 张参考图和 1 个托管视频 URL，并可生成原生音频。",
+      "command": "kling-v3-omni",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--model", "Kling_V3_Omni"],
+      "fields": [
+        {"name": "prompt", "label": "视频提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "images", "label": "参考图片（最多 4 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 4},
+        {"name": "videoUrl", "label": "参考视频 URL（可选）", "type": "text", "flag": "--video", "placeholder": "https://example.com/reference.mp4", "help": "仅支持托管 URL"},
+        {"name": "duration", "label": "时长", "type": "select", "flag": "--duration", "default": "5s", "options": ["3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s", "11s", "12s", "13s", "14s", "15s"]},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "16:9", "options": ["16:9", "9:16", "1:1"], "help": "提供参考视频时 CLI 会忽略此值"},
+        {"name": "generateAudio", "label": "生成原生音频", "type": "select", "flag": "--generate-audio", "default": "false", "options": [{"value": "true", "label": "是"}, {"value": "false", "label": "否"}]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "minimax-h3-reference": {
+      "title": "MiniMax H3 Reference 多模态视频生成",
+      "locale": "zh-CN",
+      "description": "支持纯文本、最多 9 张图片、3 个视频 URL 和 3 个音频 URL。",
+      "command": "minimax-h3",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--model", "MiniMax_H3_Reference"],
+      "fields": [
+        {"name": "prompt", "label": "视频提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "images", "label": "参考图片（最多 9 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 9},
+        {"name": "videoUrls", "label": "参考视频 URL（每行一个，最多 3 个）", "type": "url-list", "flag": "--video", "maxItems": 3, "help": "仅支持托管 URL"},
+        {"name": "audioUrls", "label": "参考音频 URL（每行一个，最多 3 个）", "type": "url-list", "flag": "--audio", "maxItems": 3, "help": "仅支持托管 URL"},
+        {"name": "duration", "label": "时长", "type": "select", "flag": "--duration", "default": "5s", "options": ["5s", "6s", "7s", "8s", "9s", "10s", "11s", "12s", "13s", "14s", "15s"]},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "adaptive", "options": ["adaptive", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "seedance-2": {
+      "title": "Seedance 2.0 视频生成",
+      "locale": "zh-CN",
+      "description": "多图参考视频生成，支持 4–15 秒和原生音频。",
+      "command": "seedance",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--model", "Seedance_20"],
+      "fields": [
+        {"name": "images", "label": "输入或参考图片（1–9 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "required": true, "multiple": true, "maxFiles": 9},
+        {"name": "prompt", "label": "视频提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "duration", "label": "时长", "type": "select", "flag": "--duration", "default": "4s", "options": ["4s", "5s", "6s", "7s", "8s", "9s", "10s", "11s", "12s", "13s", "14s", "15s"]},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "3:4", "options": ["21:9", "16:9", "9:16", "3:4", "4:3", "1:1"]},
+        {"name": "generateAudio", "label": "生成原生音频", "type": "select", "flag": "--generate-audio", "default": "true", "options": [{"value": "true", "label": "是"}, {"value": "false", "label": "否"}]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    },
+    "seedance-2-5": {
+      "title": "Seedance 2.5 多模态视频生成",
+      "locale": "zh-CN",
+      "description": "支持纯文本、最多 30 张图片、10 个视频 URL、10 个音频 URL及 4–30 秒原生音频视频。",
+      "command": "seedance-25",
+      "cliVersion": "0.2.9",
+      "fixedArgs": ["--model", "Seedance_25"],
+      "fields": [
+        {"name": "prompt", "label": "视频提示词", "type": "textarea", "flag": "--prompt", "required": true},
+        {"name": "images", "label": "参考图片（最多 30 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 30},
+        {"name": "videoUrls", "label": "参考视频 URL（每行一个，最多 10 个）", "type": "url-list", "flag": "--video", "maxItems": 10, "help": "仅支持托管 URL"},
+        {"name": "audioUrls", "label": "参考音频 URL（每行一个，最多 10 个）", "type": "url-list", "flag": "--audio", "maxItems": 10, "help": "仅支持托管 URL"},
+        {"name": "duration", "label": "时长", "type": "select", "flag": "--duration", "default": "4s", "options": ["4s", "5s", "6s", "7s", "8s", "9s", "10s", "11s", "12s", "13s", "14s", "15s", "16s", "17s", "18s", "19s", "20s", "21s", "22s", "23s", "24s", "25s", "26s", "27s", "28s", "29s", "30s"]},
+        {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "3:4", "options": ["21:9", "16:9", "9:16", "3:4", "4:3", "1:1"]},
+        {"name": "generateAudio", "label": "生成原生音频", "type": "select", "flag": "--generate-audio", "default": "true", "options": [{"value": "true", "label": "是"}, {"value": "false", "label": "否"}]},
+        {"name": "batch", "label": "生成数量", "type": "number", "flag": "--batch", "default": 1, "min": 1, "max": 16, "step": 1},
+        {"name": "taskName", "label": "任务名称", "type": "text", "flag": "--task-name"}
+      ]
+    }
+  }
+}

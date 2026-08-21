@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-08-21",
+  "sources": {
+    "errorCodes": "https://open.weshop.ai/doc/errorCode",
+    "plansAndPoints": "https://www.weshop.ai/member",
+    "pointsFaq": "https://www.weshop.ai/zh-Hans/faqs"
+  },
+  "rules": [
+    {
+      "kind": "insufficient_points",
+      "codes": [],
+      "patterns": [
+        "\\binsufficient\\s+(?:points?|credits?|balance)\\b",
+        "\\bnot\\s+enough\\s+(?:points?|credits?|balance)\\b",
+        "\\b(?:points?|credits?|balance)\\s+(?:(?:is|are)\\s+)?(?:insufficient|not\\s+enough|too\\s+low)\\b",
+        "\\b(?:points?|credits?)\\s+balance\\s+(?:is\\s+)?(?:insufficient|too\\s+low|not\\s+enough)\\b",
+        "点数不足",
+        "算力(?:点数?|值)?不足",
+        "积分不足",
+        "余额不足"
+      ],
+      "httpStatus": 402,
+      "title": {"zh-CN": "WeShop 点数不足", "en-US": "Insufficient WeShop points"},
+      "message": {
+        "zh-CN": "当前账户没有足够点数完成本次生成。任务已停止，系统不会自动重试。请购买算力包或升级套餐后返回表单重新提交。",
+        "en-US": "This account does not have enough points for the generation. The task was stopped and will not retry automatically. Purchase a compute pack or upgrade the plan, then submit again."
+      },
+      "actionLabel": {"zh-CN": "购买点数或升级套餐", "en-US": "Buy points or upgrade"},
+      "actionUrl": "https://www.weshop.ai/member"
+    },
+    {
+      "kind": "subscription_expired",
+      "codes": ["40004"],
+      "patterns": [
+        "\\bapi\\s*key\\s+has\\s+expired\\b",
+        "\\bapi\\s*key\\s+expired\\b",
+        "\\bsubscription\\s+(?:has\\s+)?expired\\b",
+        "\\b(?:plan|package)\\s+(?:has\\s+)?expired\\b",
+        "订阅(?:已)?(?:失效|过期)",
+        "套餐(?:已)?(?:失效|过期)",
+        "API\\s*Key(?:已)?过期"
+      ],
+      "httpStatus": 402,
+      "title": {"zh-CN": "WeShop API 订阅已失效", "en-US": "WeShop API subscription expired"},
+      "message": {
+        "zh-CN": "当前 API Key 对应的订阅已过期（官方错误码 40004）。任务已停止，系统不会自动重试。请购买有效的 API 套餐后返回表单重新提交。",
+        "en-US": "The subscription for this API key has expired (official error code 40004). The task was stopped and will not retry automatically. Purchase a valid API plan, then submit again."
+      },
+      "actionLabel": {"zh-CN": "购买或续订 API 套餐", "en-US": "Purchase or renew API plan"},
+      "actionUrl": "https://www.weshop.ai/member"
+    },
+    {
+      "kind": "api_key_disabled",
+      "codes": ["40003"],
+      "patterns": [
+        "\\bapi\\s*key\\s+has\\s+been\\s+disabled\\b",
+        "\\bapi\\s*key\\s+(?:is\\s+)?disabled\\b",
+        "API\\s*Key(?:已)?(?:禁用|停用)"
+      ],
+      "httpStatus": 403,
+      "title": {"zh-CN": "WeShop API Key 已停用", "en-US": "WeShop API key disabled"},
+      "message": {
+        "zh-CN": "当前 API Key 已被停用（官方错误码 40003）。任务已停止，系统不会自动重试；请联系 WeShop 查询停用原因。",
+        "en-US": "This API key has been disabled (official error code 40003). The task was stopped and will not retry automatically; contact WeShop for assistance."
+      },
+      "actionLabel": {"zh-CN": "联系 WeShop 支持", "en-US": "Contact WeShop support"},
+      "actionUrl": "mailto:hi@weshop.ai"
+    },
+    {
+      "kind": "api_key_invalid",
+      "codes": ["40001"],
+      "patterns": [
+        "\\bapi\\s*key\\s+error\\b",
+        "\\binvalid\\s+api\\s*key\\b",
+        "\\bunauthori[sz]ed\\b",
+        "API\\s*Key(?:无效|错误)"
+      ],
+      "httpStatus": 401,
+      "title": {"zh-CN": "WeShop API Key 无效", "en-US": "Invalid WeShop API key"},
+      "message": {
+        "zh-CN": "WeShop 拒绝了当前 API Key（官方错误码 40001）。任务已停止，系统不会自动重试。请检查或重新获取 API Key。",
+        "en-US": "WeShop rejected this API key (official error code 40001). The task was stopped and will not retry automatically. Check or obtain a new API key."
+      },
+      "actionLabel": {"zh-CN": "查看或获取 API Key", "en-US": "View or obtain API key"},
+      "actionUrl": "https://open.weshop.ai/authorization/apikey"
+    }
+  ]
+}
