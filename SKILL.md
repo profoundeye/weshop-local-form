@@ -2,7 +2,7 @@
 name: weshop-local-form
 description: Install and launch a localized WeShop web form from a compact agentName request or JSON/YAML embedded in prose, including z-image and qwen-edit, while securely handling an API key and bootstrapping dependencies. Use for a one-message fixed-model WeShop UI on any Agent Skills-compatible host; use weshop-cli-skill for direct CLI-only generation.
 metadata:
-  version: "1.4.0"
+  version: "1.5.0"
   portable-entrypoint: "scripts/start_from_text.py"
   agent-skills-spec: "https://agentskills.io/specification"
   compatibility: "Python 3.10+, long-running local processes, network/user-cache write access, and localhost URL presentation; Node.js/npm/weshop-cli bootstrap on macOS, Linux, and Windows x64/arm64."
@@ -11,6 +11,8 @@ metadata:
 # WeShop Local Form
 
 Turn a small preset request into a fixed, localized form that safely invokes the WeShop CLI and renders returned images or videos. Form fields, CLI flags, enum values, model versions, limits, and Chinese labels come only from [references/model-forms.json](references/model-forms.json); never synthesize them from the user's prose. The default outcome is a visible, ready-to-fill form—not merely installed files or setup instructions.
+
+The running form presents every validated catalog preset in a model selector at the top. Changing the selection reloads the matching fixed fields in the same local service. Submission carries only the selected preset ID, which the server resolves against the catalog again before building CLI arguments.
 
 The shortest supported request installs from the official repository and selects the fixed `z-image` form with two non-secret fields plus a recognized API-key field:
 
@@ -89,6 +91,8 @@ Do not replace this procedure with model-generated installation steps, form fiel
    ```
 
    Bind to `127.0.0.1`; do not expose the form on a network interface unless the user explicitly requests and understands that exposure. Do not report completion until the server health check succeeds and the form is visible, or automatic opening failed but a working local URL has been given to the user.
+
+   The model selector must list only presets from `references/model-forms.json`. On selection, reload `/?preset=<preset-id>` and render that preset's fixed form. On submission, resolve the hidden preset ID from the server-side catalog; reject unknown IDs rather than trusting browser-provided commands or fields.
 
 7. The form maps the selected immutable preset to CLI arguments without a shell. Local uploads are passed as temporary file paths and are uploaded by the WeShop CLI. Blocking commands render their final result immediately; asynchronous output with an `executionId` is polled through `weshop status` until success, failure, or the configured timeout.
 

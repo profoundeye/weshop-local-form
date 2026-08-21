@@ -23,7 +23,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, quote, urlparse
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -88,7 +88,7 @@ UI_DEFAULTS = {
 }
 
 STYLE = """
-:root{color-scheme:light dark;--card:#fff;--text:#18212f;--muted:#657084;--line:#dfe5ee;--accent:#6c4dff;--accent2:#5034d9;--danger:#b42318}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eef2ff,#f8fafc 45%,#f2fbf8);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{width:min(860px,calc(100% - 32px));margin:48px auto}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:0 16px 50px rgba(31,42,68,.10);padding:28px}h1{font-size:clamp(26px,5vw,38px);line-height:1.15;margin:0 0 10px}p.intro,.help{color:var(--muted)}.field{margin:22px 0}label{display:block;font-weight:650;margin-bottom:8px}input,textarea,select{width:100%;border:1px solid #cbd4e1;border-radius:11px;background:#fff;color:#18212f;font:inherit;padding:11px 13px}textarea{min-height:130px;resize:vertical}input[type=file]{padding:9px}.check{display:flex;gap:10px;align-items:center}.check input{width:auto}.required{color:var(--danger)}button{border:0;border-radius:12px;background:var(--accent);color:#fff;font:inherit;font-weight:700;padding:12px 20px;cursor:pointer}button:hover{background:var(--accent2)}button:disabled{opacity:.6;cursor:wait}.notice{border-radius:12px;padding:12px 14px;background:#fff4e5;color:#7a4d00;margin:18px 0}.error{border-radius:12px;padding:14px;background:#fff0ee;color:var(--danger);white-space:pre-wrap}.action{display:inline-block;margin-top:16px;border-radius:12px;background:var(--accent);color:#fff;padding:11px 17px;text-decoration:none;font-weight:700}.action:hover{background:var(--accent2)}.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}.media{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#111}.media img,.media video{display:block;width:100%;height:auto;max-height:640px;object-fit:contain}details{margin-top:22px}pre{overflow:auto;padding:14px;border-radius:12px;background:#111827;color:#e5e7eb;white-space:pre-wrap;word-break:break-word}.meta{color:var(--muted);font-size:14px}.back{display:inline-block;margin-top:20px;color:var(--accent);text-decoration:none;font-weight:650}@media(prefers-color-scheme:dark){:root{--card:#151d2a;--text:#eef2f7;--muted:#9ba7b9;--line:#2a3545}body{background:linear-gradient(135deg,#15132b,#0c111b 50%,#0d1b1a)}input,textarea,select{background:#0f1722;color:#eef2f7;border-color:#39475a}.notice{background:#342a10;color:#ffd98a}}
+:root{color-scheme:light dark;--card:#fff;--text:#18212f;--muted:#657084;--line:#dfe5ee;--accent:#6c4dff;--accent2:#5034d9;--danger:#b42318}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eef2ff,#f8fafc 45%,#f2fbf8);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{width:min(860px,calc(100% - 32px));margin:48px auto}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:0 16px 50px rgba(31,42,68,.10);padding:28px}h1{font-size:clamp(26px,5vw,38px);line-height:1.15;margin:0 0 10px}.model-picker{margin:0 0 14px}.model-picker label{color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.model-selector{font-size:clamp(25px,4.5vw,38px);font-weight:800;line-height:1.15;padding:12px 46px 12px 14px;border:1px solid var(--line);border-radius:14px;background-color:transparent;cursor:pointer}.model-selector:focus{outline:3px solid color-mix(in srgb,var(--accent) 25%,transparent);border-color:var(--accent)}p.intro,.help{color:var(--muted)}.field{margin:22px 0}label{display:block;font-weight:650;margin-bottom:8px}input,textarea,select{width:100%;border:1px solid #cbd4e1;border-radius:11px;background:#fff;color:#18212f;font:inherit;padding:11px 13px}textarea{min-height:130px;resize:vertical}input[type=file]{padding:9px}.check{display:flex;gap:10px;align-items:center}.check input{width:auto}.required{color:var(--danger)}button{border:0;border-radius:12px;background:var(--accent);color:#fff;font:inherit;font-weight:700;padding:12px 20px;cursor:pointer}button:hover{background:var(--accent2)}button:disabled{opacity:.6;cursor:wait}.notice{border-radius:12px;padding:12px 14px;background:#fff4e5;color:#7a4d00;margin:18px 0}.error{border-radius:12px;padding:14px;background:#fff0ee;color:var(--danger);white-space:pre-wrap}.action{display:inline-block;margin-top:16px;border-radius:12px;background:var(--accent);color:#fff;padding:11px 17px;text-decoration:none;font-weight:700}.action:hover{background:var(--accent2)}.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}.media{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#111}.media img,.media video{display:block;width:100%;height:auto;max-height:640px;object-fit:contain}details{margin-top:22px}pre{overflow:auto;padding:14px;border-radius:12px;background:#111827;color:#e5e7eb;white-space:pre-wrap;word-break:break-word}.meta{color:var(--muted);font-size:14px}.back{display:inline-block;margin-top:20px;color:var(--accent);text-decoration:none;font-weight:650}@media(prefers-color-scheme:dark){:root{--card:#151d2a;--text:#eef2f7;--muted:#9ba7b9;--line:#2a3545}body{background:linear-gradient(135deg,#15132b,#0c111b 50%,#0d1b1a)}input,textarea,select{background:#0f1722;color:#eef2f7;border-color:#39475a}.model-selector{background-color:#0f1722}.notice{background:#342a10;color:#ffd98a}}
 """
 
 
@@ -385,16 +385,55 @@ def render_field(field: dict) -> str:
     return f'<div class="field"><label for="{name}">{label}{mark}</label>{control}{help_html}</div>'
 
 
-def render_form(config: dict, api_key_present: bool, csrf_token: str) -> bytes:
+def render_form(
+    config: dict,
+    api_key_present: bool,
+    csrf_token: str,
+    preset_options: list[tuple[str, str]] | None = None,
+) -> bytes:
     ui = ui_text(config)
     description = html.escape(str(config.get("description", "")))
     intro = f'<p class="intro">{description}</p>' if description else ""
     notice = "" if api_key_present else f'<div class="notice">{html.escape(ui["apiKeyMissing"])}</div>'
     fields = "".join(render_field(field) for field in config["fields"])
     token = html.escape(csrf_token, quote=True)
+    preset_id = str(config.get("formPreset") or "")
+    options = preset_options or [(preset_id, config["title"])]
+    selector_options = []
+    for option_id, option_title in options:
+        selected = " selected" if option_id == preset_id else ""
+        selector_options.append(
+            f'<option value="{html.escape(option_id, quote=True)}"{selected}>'
+            f'{html.escape(option_title)}</option>'
+        )
+    selector = (
+        '<div class="model-picker"><label for="modelPreset">选择模型</label>'
+        '<select id="modelPreset" class="model-selector" aria-label="选择模型" '
+        'onchange="window.location.href=\'/?preset=\'+encodeURIComponent(this.value)">'
+        f'{"".join(selector_options)}</select></div>'
+    )
     submitting_js = html.escape(json.dumps(ui["submitting"], ensure_ascii=False), quote=True)
-    body = f'<h1>{html.escape(config["title"])}</h1>{intro}<p class="meta">WeShop CLI · {html.escape(config["command"])}</p>{notice}<form method="post" action="/submit" enctype="multipart/form-data" onsubmit="const b=this.querySelector(\'button\');b.disabled=true;b.textContent={submitting_js}"><input type="hidden" name="_csrf" value="{token}">{fields}<button type="submit">{html.escape(ui["submit"])}</button></form>'
+    body = f'{selector}{intro}<p class="meta">WeShop CLI · {html.escape(config["command"])}</p>{notice}<form method="post" action="/submit" enctype="multipart/form-data" onsubmit="const b=this.querySelector(\'button\');b.disabled=true;b.textContent={submitting_js}"><input type="hidden" name="_csrf" value="{token}"><input type="hidden" name="_preset" value="{html.escape(preset_id, quote=True)}">{fields}<button type="submit">{html.escape(ui["submit"])}</button></form>'
     return page_shell(config["title"], body, config.get("locale", "zh-CN"))
+
+
+def build_selectable_configs(initial_config: dict) -> dict[str, dict]:
+    initial = validate_config(initial_config)
+    configs = {
+        preset_id: resolve_preset_request({"version": 1, "formPreset": preset_id})
+        for preset_id in load_model_catalog()["presets"]
+    }
+    initial_id = initial.get("formPreset")
+    if not isinstance(initial_id, str) or initial_id not in configs:
+        raise ConfigError("initial formPreset must exist in the fixed model catalog")
+    configs[initial_id] = initial
+    return configs
+
+
+def select_config(configs: dict[str, dict], preset_id: str | None) -> dict:
+    if not isinstance(preset_id, str) or preset_id not in configs:
+        raise ConfigError("selected model is not in the fixed model catalog")
+    return configs[preset_id]
 
 
 def parse_multipart(content_type: str, body: bytes) -> dict[str, list[dict[str, Any]]]:
@@ -689,7 +728,8 @@ def render_result(config: dict, parsed: dict[str, Any], output: str) -> bytes:
     meta = f'<p class="meta">Execution ID: {execution}</p>' if execution else ""
     gallery = f'<div class="gallery">{"".join(media_html)}</div>' if media_html else ""
     raw = html.escape(redact_output(output))
-    body = f'<h1>{html.escape(heading)}</h1>{meta}{code_html}{error_html}{action_html}{gallery}<details><summary>{html.escape(ui["rawOutput"])}</summary><pre>{raw}</pre></details><a class="back" href="/">← {html.escape(ui["back"])}</a>'
+    preset_id = quote(str(config.get("formPreset") or ""), safe="")
+    body = f'<h1>{html.escape(heading)}</h1>{meta}{code_html}{error_html}{action_html}{gallery}<details><summary>{html.escape(ui["rawOutput"])}</summary><pre>{raw}</pre></details><a class="back" href="/?preset={preset_id}">← {html.escape(ui["back"])}</a>'
     return page_shell(heading, body, config.get("locale", "zh-CN"))
 
 
@@ -703,6 +743,13 @@ class FormHandler(BaseHTTPRequestHandler):
     @property
     def csrf_token(self) -> str:
         return self.server.csrf_token  # type: ignore[attr-defined]
+
+    @property
+    def configs(self) -> dict[str, dict]:
+        return self.server.configs  # type: ignore[attr-defined]
+
+    def requested_config(self, preset_id: str | None) -> dict:
+        return select_config(self.configs, preset_id or self.config.get("formPreset"))
 
     def send_html(self, payload: bytes, status: HTTPStatus = HTTPStatus.OK) -> None:
         self.send_response(status)
@@ -718,7 +765,8 @@ class FormHandler(BaseHTTPRequestHandler):
         self.wfile.write(payload)
 
     def do_GET(self) -> None:
-        path = urlparse(self.path).path
+        parsed_url = urlparse(self.path)
+        path = parsed_url.path
         if path == "/health":
             payload = json.dumps({"ok": True, "command": self.config["command"]}).encode()
             self.send_response(HTTPStatus.OK)
@@ -730,11 +778,19 @@ class FormHandler(BaseHTTPRequestHandler):
         if path != "/":
             self.send_error(HTTPStatus.NOT_FOUND)
             return
+        preset_values = parse_qs(parsed_url.query).get("preset", [])
+        try:
+            config = self.requested_config(preset_values[0] if preset_values else None)
+        except ConfigError as exc:
+            self.send_error(HTTPStatus.BAD_REQUEST, str(exc))
+            return
+        options = [(preset_id, item["title"]) for preset_id, item in self.configs.items()]
         self.send_html(
             render_form(
-                self.config,
+                config,
                 bool(os.environ.get("WESHOP_API_KEY")),
                 self.csrf_token,
+                preset_options=options,
             )
         )
 
@@ -742,6 +798,7 @@ class FormHandler(BaseHTTPRequestHandler):
         if urlparse(self.path).path != "/submit":
             self.send_error(HTTPStatus.NOT_FOUND)
             return
+        active_config = self.config
         if not os.environ.get("WESHOP_API_KEY"):
             ui = ui_text(self.config)
             payload = page_shell(
@@ -763,21 +820,23 @@ class FormHandler(BaseHTTPRequestHandler):
             submitted_token = scalar_value(parts, "_csrf") or ""
             if not hmac.compare_digest(submitted_token, self.csrf_token):
                 raise ConfigError("invalid form token; reload the form and submit again")
+            active_config = self.requested_config(scalar_value(parts, "_preset"))
             with tempfile.TemporaryDirectory(prefix="weshop-form-") as temp_dir:
-                args = build_command(self.config, parts, Path(temp_dir))
-                parsed, output = run_command(self.config, args)
+                args = build_command(active_config, parts, Path(temp_dir))
+                parsed, output = run_command(active_config, args)
             self.send_html(
-                render_result(self.config, parsed, output),
+                render_result(active_config, parsed, output),
                 result_http_status(parsed),
             )
         except (ConfigError, subprocess.SubprocessError, TimeoutError, OSError) as exc:
-            ui = ui_text(self.config)
+            ui = ui_text(active_config)
+            preset_id = quote(str(active_config.get("formPreset") or ""), safe="")
             payload = page_shell(
                 ui["error"],
                 f'<h1>{html.escape(ui["error"])}</h1><div class="error">'
-                f'{html.escape(str(exc))}</div><a class="back" href="/">'
+                f'{html.escape(str(exc))}</div><a class="back" href="/?preset={preset_id}">'
                 f'← {html.escape(ui["back"])}</a>',
-                self.config.get("locale", "zh-CN"),
+                active_config.get("locale", "zh-CN"),
             )
             self.send_html(payload, HTTPStatus.BAD_REQUEST)
 
@@ -792,6 +851,7 @@ def serve(
     open_browser: bool = False,
 ) -> int:
     config = validate_config(config)
+    configs = build_selectable_configs(config)
     if not 1 <= port <= 65535:
         raise ConfigError("port must be between 1 and 65535")
     candidates = range(port, port + 11) if port == 8765 else (port,)
@@ -806,6 +866,7 @@ def serve(
     if server is None:
         raise OSError(f"could not bind local form server near port {port}: {last_error}")
     server.config = config  # type: ignore[attr-defined]
+    server.configs = configs  # type: ignore[attr-defined]
     server.csrf_token = secrets.token_urlsafe(32)  # type: ignore[attr-defined]
     actual_port = int(server.server_address[1])
     local_url = f"http://{host}:{actual_port}/"
