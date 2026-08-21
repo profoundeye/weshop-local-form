@@ -55,6 +55,10 @@ MINIMAL_AGENT_REQUEST_KEYS = {
     "safeGenerat",
     "resultBase64",
 }
+MINIMAL_AGENT_REQUIRED_KEYS = {
+    "agentName",
+    "safeGenerat",
+}
 
 UI_DEFAULTS = {
     "zh-CN": {
@@ -159,7 +163,7 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
                 "and a recognized API-key field; unsupported keys: "
                 + ", ".join(sorted(extra))
             )
-        missing = MINIMAL_AGENT_REQUEST_KEYS - set(request)
+        missing = MINIMAL_AGENT_REQUIRED_KEYS - set(request)
         if missing:
             raise ConfigError(
                 "minimal agent request is missing: " + ", ".join(sorted(missing))
@@ -168,7 +172,7 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
             raise ConfigError("minimal agent request currently requires agentName 'z-image'")
         if request["safeGenerat"] != "off":
             raise ConfigError("minimal agent request requires safeGenerat to be the string 'off'")
-        if request["resultBase64"] is not True:
+        if "resultBase64" in request and request["resultBase64"] is not True:
             raise ConfigError("minimal agent request requires resultBase64 to be true")
         request = {"version": 1, "formPreset": "z-image"}
     if request.get("version") != 1:

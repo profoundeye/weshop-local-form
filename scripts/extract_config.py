@@ -12,6 +12,14 @@ from typing import Any
 
 
 FENCE_RE = re.compile(r"```(?:json|yaml|yml)?\s*\n(.*?)```", re.DOTALL | re.IGNORECASE)
+INSTALL_REPO_URL = "https://github.com/profoundeye/weshop-local-form.git"
+COMPACT_FIELD_RE = re.compile(
+    r"(?<![A-Za-z0-9_])(agentName|safeGenerat|resultBase64|apiKey|weshopApiKey|WESHOP_API_KEY)\s*:\s*"
+)
+COMPACT_FORBIDDEN_RE = re.compile(
+    r"(?<![A-Za-z0-9_])(command|fields|fixedArgs|formPreset|defaults|locale|version)\s*:",
+    re.IGNORECASE,
+)
 SECRET_KEYS = {"apikey", "weshopapikey", "weshop_api_key"}
 SECRET_CONTAINERS = {"secrets", "env"}
 
@@ -246,11 +254,65 @@ def pop_api_key(config: dict) -> str | None:
     return values[0] if values else None
 
 
+def parse_compact_install_request(text: str) -> tuple[dict, str | None] | None:
+    """Parse the documented one-line install-and-launch request without persisting its key."""
+    if INSTALL_REPO_URL not in text:
+        return None
+    if COMPACT_FORBIDDEN_RE.search(text):
+        raise ParseError("compact install request may not contain form or CLI overrides")
+    matches = list(COMPACT_FIELD_RE.finditer(text))
+    if not matches:
+        return None
+    values: dict[str, str] = {}
+    for index, match in enumerate(matches):
+        key = match.group(1)
+        normalized = normalize_secret_key(key)
+        canonical = "apiKey" if normalized in SECRET_KEYS else key
+        if canonical in values:
+            raise ParseError(f"compact install request contains duplicate {canonical}")
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        value = text[match.end() : end].strip(" \t\r\n,，;；。")
+        if not value or re.search(r"\s", value):
+            raise ParseError(f"compact install request has an invalid {canonical} value")
+        values[canonical] = value
+    required = {"agentName", "safeGenerat", "apiKey"}
+    missing = required - set(values)
+    if missing:
+        raise ParseError("compact install request is missing: " + ", ".join(sorted(missing)))
+    config: dict[str, Any] = {
+        "agentName": values["agentName"],
+        "safeGenerat": values["safeGenerat"],
+    }
+    if "resultBase64" in values:
+        lowered = values["resultBase64"].lower()
+        if lowered not in {"true", "false"}:
+            raise ParseError("compact install request resultBase64 must be true or false")
+        config["resultBase64"] = lowered == "true"
+    return config, values["apiKey"]
+
+
 def extract_with_secret(text: str) -> tuple[dict, str | None]:
     candidates = [match.group(1).strip() for match in FENCE_RE.finditer(text)]
     candidates.extend(balanced_objects(text))
-    candidates.append(text.strip())
     errors = []
+    for candidate in candidates:
+        if not candidate:
+            continue
+        try:
+            value = parse_candidate(candidate)
+        except (json.JSONDecodeError, ParseError, ValueError) as exc:
+            errors.append(str(exc))
+            continue
+        if not isinstance(value, dict):
+            errors.append("configuration value is not an object")
+            continue
+        config = dict(value)
+        api_key = pop_api_key(config)
+        return config, api_key
+    compact = parse_compact_install_request(text)
+    if compact is not None:
+        return compact
+    candidates = [text.strip()]
     for candidate in candidates:
         if not candidate:
             continue

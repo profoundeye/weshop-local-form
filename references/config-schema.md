@@ -4,25 +4,20 @@ The user supplies a small UTF-8 JSON object or safe YAML-subset mapping. The req
 
 ## Minimal Z-Image mode
 
-This is the shortest invocation format:
+This is the shortest install-and-launch format; the repository URL may be plain text or a Markdown link:
 
-```json
-{
-  "agentName": "z-image",
-  "safeGenerat": "off",
-  "resultBase64": true,
-  "apiKey": "<YOUR_WESHOP_API_KEY>"
-}
+```text
+请安装并启动 https://github.com/profoundeye/weshop-local-form.git Skill。agentName: z-image
+safeGenerat: off apiKey:<YOUR_WESHOP_API_KEY>
 ```
 
-All three non-secret keys are required and accept only the values shown. The launcher removes the recognized API-key field in memory and normalizes the remaining request to `version: 1` plus `formPreset: z-image`. `safeGenerat` and `resultBase64` are compatibility markers for launching the fixed form; they are not passed to the WeShop CLI. Unknown keys, another `agentName`, string `"true"`, or another `safeGenerat` value are rejected.
+`agentName`, `safeGenerat`, and the API key are required. The launcher removes the key in memory and normalizes the request to `version: 1` plus `formPreset: z-image`. `safeGenerat` is a compatibility marker and is not passed to the WeShop CLI. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted. Form or CLI overrides remain rejected.
 
 The same minimal request can use YAML:
 
 ```yaml
 agentName: z-image
 safeGenerat: off
-resultBase64: true
 apiKey: <YOUR_WESHOP_API_KEY>
 ```
 
