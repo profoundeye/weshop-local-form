@@ -41,6 +41,7 @@ FORBIDDEN_ARG_RE = re.compile(r"api[-_]?key|authorization|bearer", re.IGNORECASE
 SHELL_TOKENS = {";", "&&", "||", "|", ">", ">>", "<", "`", "$("}
 CATALOG_PATH = Path(__file__).resolve().parent.parent / "references" / "model-forms.json"
 ACCOUNT_ERRORS_PATH = Path(__file__).resolve().parent.parent / "references" / "account-errors.json"
+DEFAULT_PRESET_ID = "qwen-edit"
 EVENT_PREFIX = "WESHOP_FORM_EVENT "
 PRESET_REQUEST_KEYS = {
     "version",
@@ -160,6 +161,8 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
         raise ConfigError("configuration must be a JSON/YAML object")
     if "safeGenerat" in request:
         raise ConfigError("safeGenerat is misspelled; use safeGenerate")
+    if not request:
+        request = {"version": 1, "formPreset": DEFAULT_PRESET_ID}
     if "agentName" in request:
         extra = set(request) - MINIMAL_AGENT_REQUEST_KEYS
         if extra:
@@ -413,7 +416,7 @@ def render_form(
         f'{"".join(selector_options)}</select></div>'
     )
     submitting_js = html.escape(json.dumps(ui["submitting"], ensure_ascii=False), quote=True)
-    body = f'{selector}{intro}<p class="meta">WeShop CLI · {html.escape(config["command"])}</p>{notice}<form method="post" action="/submit" enctype="multipart/form-data" onsubmit="const b=this.querySelector(\'button\');b.disabled=true;b.textContent={submitting_js}"><input type="hidden" name="_csrf" value="{token}"><input type="hidden" name="_preset" value="{html.escape(preset_id, quote=True)}">{fields}<button type="submit">{html.escape(ui["submit"])}</button></form>'
+    body = f'{selector}{intro}{notice}<form method="post" action="/submit" enctype="multipart/form-data" onsubmit="const b=this.querySelector(\'button\');b.disabled=true;b.textContent={submitting_js}"><input type="hidden" name="_csrf" value="{token}"><input type="hidden" name="_preset" value="{html.escape(preset_id, quote=True)}">{fields}<button type="submit">{html.escape(ui["submit"])}</button></form>'
     return page_shell(config["title"], body, config.get("locale", "zh-CN"))
 
 
@@ -903,7 +906,11 @@ def serve(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", required=True, type=Path)
+    parser.add_argument(
+        "--config",
+        type=Path,
+        help="Optional preset JSON; without it the form starts on Qwen Image Edit",
+    )
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
@@ -915,7 +922,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     try:
-        config = load_config(args.config)
+        config = load_config(args.config) if args.config else resolve_preset_request({})
     except ConfigError as exc:
         parser.error(str(exc))
     if args.check:

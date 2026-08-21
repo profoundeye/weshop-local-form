@@ -11,7 +11,15 @@ This is the shortest install-and-launch format; the repository URL may be plain 
 safeGenerate: off apiKey:<YOUR_WESHOP_API_KEY>
 ```
 
-`agentName`, `safeGenerate: off`, and the API key are required. The launcher removes the key in memory and maps the agent name to a fixed preset. The marker is not passed to the WeShop CLI. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted. Form or CLI overrides remain rejected.
+When a model is supplied, `agentName`, `safeGenerate: off`, and the API key are required. The launcher removes the key in memory and maps the agent name to a fixed preset. The marker is not passed to the WeShop CLI. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted. Form or CLI overrides remain rejected.
+
+When the input supplies an API key but no model, the launcher selects `qwen-edit`:
+
+```text
+apiKey:<YOUR_WESHOP_API_KEY>
+```
+
+An empty input also selects `qwen-edit` when `WESHOP_API_KEY` already exists in the environment.
 
 After installation, Qwen Edit uses the shorter request below:
 
@@ -49,7 +57,7 @@ apiKey: <YOUR_WESHOP_API_KEY>
 | `pollSeconds` | no | Async polling interval, `1`–`30`. |
 | `apiKey` | no | One-run WeShop API key. Also accepted as `weshopApiKey`, `WESHOP_API_KEY`, or under `secrets`/`env`; removed before preset resolution. |
 
-Any `command`, `fields`, `fixedArgs`, title, label, flag, enum, UI override, or unknown top-level key is rejected. This prevents prose interpretation from changing the CLI contract.
+Any `command`, `fields`, `fixedArgs`, title, label, flag, enum, UI override, or unknown top-level key is rejected. When a general preset configuration is supplied, it must explicitly name `formPreset`; the Qwen default applies when no model configuration is supplied. This prevents prose interpretation from changing the CLI contract.
 
 ### Fixed presets
 

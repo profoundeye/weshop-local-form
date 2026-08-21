@@ -2,7 +2,7 @@
 name: weshop-local-form
 description: Install and launch a localized WeShop web form from a compact agentName request or JSON/YAML embedded in prose, including z-image and qwen-edit, while securely handling an API key and bootstrapping dependencies. Use for a one-message fixed-model WeShop UI on any Agent Skills-compatible host; use weshop-cli-skill for direct CLI-only generation.
 metadata:
-  version: "1.5.1"
+  version: "1.6.0"
   portable-entrypoint: "scripts/start_from_text.py"
   agent-skills-spec: "https://agentskills.io/specification"
   compatibility: "Python 3.10+, long-running local processes, network/user-cache write access, and localhost URL presentation; Node.js/npm/weshop-cli bootstrap on macOS, Linux, and Windows x64/arm64."
@@ -12,7 +12,7 @@ metadata:
 
 Turn a small preset request into a fixed, localized form that safely invokes the WeShop CLI and renders returned images or videos. Form fields, CLI flags, enum values, model versions, limits, and Chinese labels come only from [references/model-forms.json](references/model-forms.json); never synthesize them from the user's prose. The default outcome is a visible, ready-to-fill form—not merely installed files or setup instructions.
 
-The running form presents every validated catalog preset in a model selector at the top. Changing the selection reloads the matching fixed fields in the same local service. Submission carries only the selected preset ID, which the server resolves against the catalog again before building CLI arguments.
+The running form presents every validated catalog preset in a model selector at the top. Changing the selection reloads the matching fixed fields in the same local service. A supplied `agentName` or `formPreset` is initially selected; when no model is supplied, select `qwen-edit`. Submission carries only the selected preset ID, which the server resolves against the catalog again before building CLI arguments. Do not expose the internal CLI command in the form UI.
 
 The shortest supported request installs from the official repository and selects the fixed `z-image` form with two non-secret fields plus a recognized API-key field:
 
@@ -40,7 +40,7 @@ Do not replace this procedure with model-generated installation steps, form fiel
 
 ## Workflow
 
-1. Locate the compact request, JSON, or supported YAML. Read [references/config-schema.md](references/config-schema.md) for accepted agent names and the preset list. Minimal mode requires a supported `agentName`, `safeGenerate: off`, and an API key. `resultBase64: true` is optional compatibility input. The general mode must select `formPreset`; it may set `defaults` for fields already defined by that preset, but it may not supply `command`, `fields`, `fixedArgs`, labels, flags, or enums. Recognize the API key only at these paths: top-level `apiKey`, `weshopApiKey`, or `WESHOP_API_KEY`; or the same names inside `secrets` or `env`.
+1. Locate the compact request, JSON, or supported YAML. Read [references/config-schema.md](references/config-schema.md) for accepted agent names and the preset list. Minimal mode with a model requires a supported `agentName`, `safeGenerate: off`, and an API key. When only an API key is supplied—or the input is empty and the environment already contains the key—use the `qwen-edit` preset. `resultBase64: true` is optional compatibility input only when `agentName` is present. A supplied general-mode configuration must select `formPreset`; it may set `defaults` only for fields already defined by that preset, but it may not supply `command`, `fields`, `fixedArgs`, labels, flags, or enums. Recognize the API key only at these paths: top-level `apiKey`, `weshopApiKey`, or `WESHOP_API_KEY`; or the same names inside `secrets` or `env`.
 
    For secret-free input, extract a sanitized JSON configuration with:
 
@@ -92,7 +92,7 @@ Do not replace this procedure with model-generated installation steps, form fiel
 
    Bind to `127.0.0.1`; do not expose the form on a network interface unless the user explicitly requests and understands that exposure. Do not report completion until the server health check succeeds and the form is visible, or automatic opening failed but a working local URL has been given to the user.
 
-   The model selector must list only presets from `references/model-forms.json`. On selection, reload `/?preset=<preset-id>` and render that preset's fixed form. On submission, resolve the hidden preset ID from the server-side catalog; reject unknown IDs rather than trusting browser-provided commands or fields.
+   The model selector must list only presets from `references/model-forms.json`. Its initial selection is the model resolved from the input configuration, or `qwen-edit` when the input contains no model. On selection, reload `/?preset=<preset-id>` and render that preset's fixed form. On submission, resolve the hidden preset ID from the server-side catalog; reject unknown IDs rather than trusting browser-provided commands or fields. Do not display the CLI name or command in the form.
 
 7. The form maps the selected immutable preset to CLI arguments without a shell. Local uploads are passed as temporary file paths and are uploaded by the WeShop CLI. Blocking commands render their final result immediately; asynchronous output with an `executionId` is polled through `weshop status` until success, failure, or the configured timeout.
 

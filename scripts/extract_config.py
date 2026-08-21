@@ -277,14 +277,19 @@ def parse_compact_install_request(text: str) -> tuple[dict, str | None] | None:
         if not value or re.search(r"\s", value):
             raise ParseError(f"compact install request has an invalid {canonical} value")
         values[canonical] = value
-    required = {"agentName", "safeGenerate", "apiKey"}
+    model_keys = {"agentName", "safeGenerate", "resultBase64"}
+    required = {"agentName", "safeGenerate", "apiKey"} if model_keys & set(values) else {"apiKey"}
     missing = required - set(values)
     if missing:
         raise ParseError("compact install request is missing: " + ", ".join(sorted(missing)))
-    config: dict[str, Any] = {
-        "agentName": values["agentName"],
-        "safeGenerate": values["safeGenerate"],
-    }
+    config: dict[str, Any] = {}
+    if "agentName" in values:
+        config.update(
+            {
+                "agentName": values["agentName"],
+                "safeGenerate": values["safeGenerate"],
+            }
+        )
     if "resultBase64" in values:
         lowered = values["resultBase64"].lower()
         if lowered not in {"true", "false"}:
@@ -294,6 +299,8 @@ def parse_compact_install_request(text: str) -> tuple[dict, str | None] | None:
 
 
 def extract_with_secret(text: str) -> tuple[dict, str | None]:
+    if not text.strip():
+        return {}, None
     candidates = [match.group(1).strip() for match in FENCE_RE.finditer(text)]
     candidates.extend(balanced_objects(text))
     errors = []
