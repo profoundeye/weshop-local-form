@@ -111,7 +111,7 @@ def current_version() -> str | None:
     return command_version("weshop")
 
 
-def dependency_status(cli_version: str = "0.2.9") -> dict[str, Any]:
+def dependency_status(cli_version: str = "0.2.12") -> dict[str, Any]:
     activate_private_runtime()
     node = command_version("node")
     npm = command_version("npm")
@@ -261,9 +261,9 @@ def ensure_node_and_npm(install: bool) -> tuple[str, str]:
     return node, npm
 
 
-def ensure_weshop_cli(version: str = "0.2.9", install: bool = True) -> dict[str, Any]:
+def ensure_weshop_cli(version: str = "0.2.12", install: bool = True) -> dict[str, Any]:
     if not VERSION_RE.fullmatch(version):
-        raise InstallError("version must be semantic, such as 0.2.9")
+        raise InstallError("version must be semantic, such as 0.2.12")
     activate_private_runtime()
     installed = current_version()
     status = dependency_status(version)
@@ -322,11 +322,11 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--install", action="store_true")
-    parser.add_argument("--version", default="0.2.9")
+    parser.add_argument("--version", default="0.2.12")
     args = parser.parse_args()
 
     if not VERSION_RE.fullmatch(args.version):
-        parser.error("--version must be a semantic version such as 0.2.9")
+        parser.error("--version must be a semantic version such as 0.2.12")
     if args.check:
         status = dependency_status(args.version)
         if status["ready"]:

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "verifiedWith": "weshop-cli 0.2.9",
+  "verifiedWith": "weshop-cli 0.2.12",
   "verifiedAt": "2026-08-21",
   "presets": {
     "gpt-image-low": {
@@ -8,7 +8,7 @@
       "locale": "zh-CN",
       "description": "低成本验证、草稿和基础图像编辑。最多 5 张参考图。",
       "command": "gpt-image",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--quality", "low"],
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true, "placeholder": "描述要生成的图像，或如何编辑参考图"},
@@ -24,7 +24,7 @@
       "locale": "zh-CN",
       "description": "常规交付、可读文字、多语言和图像翻译的默认预设。最多 5 张参考图。",
       "command": "gpt-image",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--quality", "medium"],
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true, "placeholder": "描述图像内容、文字、版式或编辑要求"},
@@ -40,7 +40,7 @@
       "locale": "zh-CN",
       "description": "复杂高质量最终交付。建议仅在 Medium 无法满足验收时使用。",
       "command": "gpt-image",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--quality", "high"],
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true, "placeholder": "详细描述最终图像及验收要求"},
@@ -56,7 +56,7 @@
       "locale": "zh-CN",
       "description": "构图收敛、内部评审和多图编辑。最多 9 张参考图。",
       "command": "nano-banana-edit",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--model", "nano"],
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
@@ -72,7 +72,7 @@
       "locale": "zh-CN",
       "description": "快速批量发散、草稿和多图编辑。最多 9 张参考图。",
       "command": "nano-banana-edit",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--model", "nano2"],
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
@@ -88,7 +88,7 @@
       "locale": "zh-CN",
       "description": "适合高光影要求或亚洲审美的常规 2K 交付。最多 14 张参考图。",
       "command": "seedream",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--image-size", "2K"],
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
@@ -105,7 +105,7 @@
       "locale": "zh-CN",
       "description": "适合高光影、材质和最终主视觉交付的 3K 预设。最多 14 张参考图。",
       "command": "seedream",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--image-size", "3K"],
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
@@ -122,7 +122,7 @@
       "locale": "zh-CN",
       "description": "纯文本艺术创作、灵感和插画；可选 1 张风格参考图。每次固定返回 4 张图。",
       "command": "midjourney",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--model", "Midjourney_7"],
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
@@ -136,7 +136,7 @@
       "locale": "zh-CN",
       "description": "纯文本写实图像及中国文化元素。该模型不支持参考图片。",
       "command": "z-image",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true},
         {"name": "aspectRatio", "label": "画面比例", "type": "select", "flag": "--aspect-ratio", "default": "1:1", "options": ["1:1", "2:3", "3:2", "4:3", "3:4", "16:9", "9:16", "21:9"]},
@@ -149,7 +149,7 @@
       "locale": "zh-CN",
       "description": "通过自然语言生成或编辑图像；可选上传最多 5 张参考图片。",
       "command": "qwen-image-edit",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fields": [
         {"name": "prompt", "label": "提示词", "type": "textarea", "flag": "--prompt", "required": true, "placeholder": "描述要生成的图像，或如何编辑参考图片"},
         {"name": "images", "label": "参考图片（最多 5 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "multiple": true, "maxFiles": 5},
@@ -162,7 +162,7 @@
       "locale": "zh-CN",
       "description": "首帧或首尾帧视频生成，支持 3–15 秒与原生音频。",
       "command": "kling",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--model", "Kling_3_0"],
       "fields": [
         {"name": "images", "label": "首帧与可选尾帧（1–2 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "required": true, "multiple": true, "maxFiles": 2},
@@ -178,7 +178,7 @@
       "locale": "zh-CN",
       "description": "支持纯文本、最多 4 张参考图和 1 个托管视频 URL，并可生成原生音频。",
       "command": "kling-v3-omni",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--model", "Kling_V3_Omni"],
       "fields": [
         {"name": "prompt", "label": "视频提示词", "type": "textarea", "flag": "--prompt", "required": true},
@@ -196,7 +196,7 @@
       "locale": "zh-CN",
       "description": "支持纯文本、最多 9 张图片、3 个视频 URL 和 3 个音频 URL。",
       "command": "minimax-h3",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--model", "MiniMax_H3_Reference"],
       "fields": [
         {"name": "prompt", "label": "视频提示词", "type": "textarea", "flag": "--prompt", "required": true},
@@ -214,7 +214,7 @@
       "locale": "zh-CN",
       "description": "多图参考视频生成，支持 4–15 秒和原生音频。",
       "command": "seedance",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--model", "Seedance_20"],
       "fields": [
         {"name": "images", "label": "输入或参考图片（1–9 张）", "type": "file", "flag": "--image", "accept": "image/png,image/jpeg,image/webp", "required": true, "multiple": true, "maxFiles": 9},
@@ -231,7 +231,7 @@
       "locale": "zh-CN",
       "description": "支持纯文本、最多 30 张图片、10 个视频 URL、10 个音频 URL及 4–30 秒原生音频视频。",
       "command": "seedance-25",
-      "cliVersion": "0.2.9",
+      "cliVersion": "0.2.12",
       "fixedArgs": ["--model", "Seedance_25"],
       "fields": [
         {"name": "prompt", "label": "视频提示词", "type": "textarea", "flag": "--prompt", "required": true},

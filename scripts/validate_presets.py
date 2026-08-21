@@ -7,6 +7,7 @@ import argparse
 import shutil
 import subprocess
 
+from install_weshop_cli import activate_private_runtime
 from weshop_form import CATALOG_PATH, ConfigError, load_model_catalog, validate_config
 
 
@@ -24,6 +25,8 @@ def main() -> int:
     catalog = load_model_catalog()
     errors = []
     help_cache = {}
+    if args.check_cli:
+        activate_private_runtime()
     executable = shutil.which("weshop") if args.check_cli else None
     if args.check_cli and not executable:
         parser.error("weshop CLI was not found")

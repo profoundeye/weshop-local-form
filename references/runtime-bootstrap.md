@@ -6,12 +6,12 @@ The normal launcher is self-bootstrapping. A user should only need to provide th
 
 - Bootstrap host: Python 3.10 or newer. Prefer the host agent's bundled Python runtime if no suitable executable is on the user's shell path; do not require a separate system-wide installation when the agent already provides one.
 - JavaScript runtime: Node.js 22 or newer with npm.
-- Generation client: the exact `weshop-cli` version fixed by the selected form preset, currently `0.2.9`.
+- Generation client: the exact `weshop-cli` version fixed by the selected form preset, currently `0.2.12`. This version consumes `--safeGenerate=off` before model-specific command parsing and sends it as a private run control.
 - Browser: the operating system's default browser. Failure to open it automatically is non-fatal; preserve the server and show the printed local URL.
 
 ## Installation behavior
 
-`scripts/install_weshop_cli.py --install --version 0.2.9` performs the same preparation used by the launcher:
+`scripts/install_weshop_cli.py --install --version 0.2.12` performs the same preparation used by the launcher:
 
 1. Reuse a working local Node.js/npm and matching WeShop CLI when already available.
 2. If Node.js is missing, too old, or lacks npm, download the official Node.js `24.19.0` LTS archive from `https://nodejs.org/dist/v24.19.0/` for macOS, Linux, or Windows on x64/arm64.

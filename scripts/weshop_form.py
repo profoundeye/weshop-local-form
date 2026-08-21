@@ -164,6 +164,7 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
         raise ConfigError("safeGenerat is misspelled; use safeGenerate")
     if not request:
         request = {"version": 1, "formPreset": DEFAULT_PRESET_ID}
+    safe_generate = None
     if "agentName" in request:
         extra = set(request) - MINIMAL_AGENT_REQUEST_KEYS
         if extra:
@@ -186,6 +187,7 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
             raise ConfigError("minimal agent request requires safeGenerate")
         if request["safeGenerate"] != "off":
             raise ConfigError("minimal agent request requires safeGenerate to be the string 'off'")
+        safe_generate = request["safeGenerate"]
         if "resultBase64" in request and request["resultBase64"] is not True:
             raise ConfigError("minimal agent request requires resultBase64 to be true")
         request = {"version": 1, "formPreset": preset_id}
@@ -208,6 +210,8 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
     resolved = copy.deepcopy(preset)
     resolved["version"] = 1
     resolved["formPreset"] = preset_id
+    if safe_generate is not None:
+        resolved["safeGenerate"] = safe_generate
     requested_locale = request.get("locale", resolved.get("locale", "zh-CN"))
     if requested_locale != resolved.get("locale", "zh-CN"):
         raise ConfigError(
@@ -260,9 +264,9 @@ def validate_config(config: Any) -> dict:
         raise ConfigError("title must be a non-empty string")
     if not isinstance(config["command"], str) or not COMMAND_RE.fullmatch(config["command"]):
         raise ConfigError("command may contain only letters, numbers, and hyphens")
-    cli_version = config.get("cliVersion", "0.2.9")
+    cli_version = config.get("cliVersion", "0.2.12")
     if not isinstance(cli_version, str) or not VERSION_RE.fullmatch(cli_version):
-        raise ConfigError("cliVersion must be a semantic version such as 0.2.9")
+        raise ConfigError("cliVersion must be a semantic version such as 0.2.12")
     fields = config["fields"]
     if not isinstance(fields, list) or not fields:
         raise ConfigError("fields must be a non-empty array")
@@ -313,6 +317,9 @@ def validate_config(config: Any) -> dict:
     for item in fixed_args:
         if FORBIDDEN_ARG_RE.search(item) or item in SHELL_TOKENS or "\x00" in item:
             raise ConfigError(f"fixedArgs contains a forbidden token: {item!r}")
+    safe_generate = config.get("safeGenerate")
+    if safe_generate is not None and safe_generate != "off":
+        raise ConfigError("safeGenerate must be the string 'off'")
     for key, low, high, fallback in (
         ("timeoutSeconds", 30, 7200, 1800),
         ("pollSeconds", 1, 30, 3),
@@ -427,6 +434,9 @@ def build_selectable_configs(initial_config: dict) -> dict[str, dict]:
         preset_id: resolve_preset_request({"version": 1, "formPreset": preset_id})
         for preset_id in load_model_catalog()["presets"]
     }
+    if initial.get("safeGenerate") is not None:
+        for selectable_config in configs.values():
+            selectable_config["safeGenerate"] = initial["safeGenerate"]
     initial_id = initial.get("formPreset")
     if not isinstance(initial_id, str) or initial_id not in configs:
         raise ConfigError("initial formPreset must exist in the fixed model catalog")
@@ -473,7 +483,10 @@ def build_command(config: dict, parts: dict[str, list[dict[str, Any]]], upload_d
     executable = shutil.which("weshop")
     if not executable:
         raise ConfigError("weshop CLI was not found; run install_weshop_cli.py --install first")
-    args = [executable, config["command"], *config.get("fixedArgs", [])]
+    args = [executable, config["command"]]
+    if config.get("safeGenerate") is not None:
+        args.append(f'--safeGenerate={config["safeGenerate"]}')
+    args.extend(config.get("fixedArgs", []))
     for field in config["fields"]:
         name, flag, field_type = field["name"], field["flag"], field["type"]
         if field_type == "file":

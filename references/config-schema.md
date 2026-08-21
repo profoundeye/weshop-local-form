@@ -11,7 +11,7 @@ This is the shortest install-and-launch format; the repository URL may be plain 
 safeGenerate: off apiKey:<YOUR_WESHOP_API_KEY>
 ```
 
-When a model is supplied, `agentName`, `safeGenerate: off`, and the API key are required. The launcher removes the key in memory and maps the agent name to a fixed preset. The marker is not passed to the WeShop CLI. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted. Form or CLI overrides remain rejected.
+When a model is supplied, `agentName`, `safeGenerate: off`, and the API key are required. The launcher removes the key in memory, maps the agent name to a fixed preset, and passes the validated control to the CLI as `--safeGenerate=off`. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted and it is not forwarded. Form or CLI overrides remain rejected.
 
 When the input supplies an API key but no model, the launcher selects `qwen-edit`:
 
@@ -28,7 +28,7 @@ agentName: qwen-image-edit
 safeGenerate: off apiKey:<YOUR_WESHOP_API_KEY>
 ```
 
-Only `safeGenerate` is accepted. The misspelling `safeGenerat` is rejected with a correction message. This launcher marker is never passed to the CLI.
+Only `safeGenerate` is accepted. The misspelling `safeGenerat` is rejected with a correction message. The value must be `off` and is forwarded exactly once as the private global CLI argument `--safeGenerate=off`.
 
 | agentName | Fixed form preset | CLI command |
 |---|---|---|
@@ -80,7 +80,7 @@ Any `command`, `fields`, `fixedArgs`, title, label, flag, enum, UI override, or 
 | `seedance-2` | `model=Seedance_20` | Multi-image 4–15 second video |
 | `seedance-2-5` | `model=Seedance_25` | Native 4–30 second multimodal video |
 
-The catalog is verified against `weshop-cli 0.2.9`. A model not listed here is intentionally unsupported until a fixed preset is added and `scripts/validate_presets.py --check-cli` passes.
+The catalog is verified against `weshop-cli 0.2.12`. A model not listed here is intentionally unsupported until a fixed preset is added and `scripts/validate_presets.py --check-cli` passes.
 
 ### JSON example
 
