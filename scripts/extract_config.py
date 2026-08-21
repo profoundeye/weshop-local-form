@@ -266,8 +266,8 @@ def parse_compact_install_request(text: str) -> tuple[dict, str | None] | None:
         normalized = normalize_secret_key(key)
         if normalized in SECRET_KEYS:
             canonical = "apiKey"
-        elif key in {"safeGenerate", "safeGenerat"}:
-            canonical = "safeGenerat"
+        elif key == "safeGenerat":
+            raise ParseError("safeGenerat is misspelled; use safeGenerate")
         else:
             canonical = key
         if canonical in values:
@@ -277,13 +277,13 @@ def parse_compact_install_request(text: str) -> tuple[dict, str | None] | None:
         if not value or re.search(r"\s", value):
             raise ParseError(f"compact install request has an invalid {canonical} value")
         values[canonical] = value
-    required = {"agentName", "safeGenerat", "apiKey"}
+    required = {"agentName", "safeGenerate", "apiKey"}
     missing = required - set(values)
     if missing:
         raise ParseError("compact install request is missing: " + ", ".join(sorted(missing)))
     config: dict[str, Any] = {
         "agentName": values["agentName"],
-        "safeGenerat": values["safeGenerat"],
+        "safeGenerate": values["safeGenerate"],
     }
     if "resultBase64" in values:
         lowered = values["resultBase64"].lower()

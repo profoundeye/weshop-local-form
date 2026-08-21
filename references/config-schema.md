@@ -8,10 +8,10 @@ This is the shortest install-and-launch format; the repository URL may be plain 
 
 ```text
 请安装并启动 https://github.com/profoundeye/weshop-local-form.git Skill。agentName: z-image
-safeGenerat: off apiKey:<YOUR_WESHOP_API_KEY>
+safeGenerate: off apiKey:<YOUR_WESHOP_API_KEY>
 ```
 
-`agentName`, exactly one safe-generation marker, and the API key are required. The launcher removes the key in memory and maps the agent name to a fixed preset. The marker is not passed to the WeShop CLI. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted. Form or CLI overrides remain rejected.
+`agentName`, `safeGenerate: off`, and the API key are required. The launcher removes the key in memory and maps the agent name to a fixed preset. The marker is not passed to the WeShop CLI. The legacy `resultBase64: true` marker is optional; if supplied, only boolean `true` is accepted. Form or CLI overrides remain rejected.
 
 After installation, Qwen Edit uses the shorter request below:
 
@@ -20,7 +20,7 @@ agentName: qwen-edit
 safeGenerate: off apiKey:<YOUR_WESHOP_API_KEY>
 ```
 
-Both `safeGenerate` and the legacy spelling `safeGenerat` are accepted, but exactly one must be supplied. They are launcher markers and are never passed to the CLI.
+Only `safeGenerate` is accepted. The misspelling `safeGenerat` is rejected with a correction message. This launcher marker is never passed to the CLI.
 
 | agentName | Fixed form preset | CLI command |
 |---|---|---|
@@ -31,7 +31,7 @@ The same minimal request can use YAML:
 
 ```yaml
 agentName: z-image
-safeGenerat: off
+safeGenerate: off
 apiKey: <YOUR_WESHOP_API_KEY>
 ```
 

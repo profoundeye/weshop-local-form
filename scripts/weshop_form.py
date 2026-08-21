@@ -53,7 +53,6 @@ PRESET_REQUEST_KEYS = {
 MINIMAL_AGENT_REQUEST_KEYS = {
     "agentName",
     "safeGenerate",
-    "safeGenerat",
     "resultBase64",
 }
 MINIMAL_AGENT_REQUIRED_KEYS = {
@@ -159,11 +158,13 @@ def load_account_error_catalog(path: Path = ACCOUNT_ERRORS_PATH) -> dict:
 def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> dict:
     if not isinstance(request, dict):
         raise ConfigError("configuration must be a JSON/YAML object")
+    if "safeGenerat" in request:
+        raise ConfigError("safeGenerat is misspelled; use safeGenerate")
     if "agentName" in request:
         extra = set(request) - MINIMAL_AGENT_REQUEST_KEYS
         if extra:
             raise ConfigError(
-                "minimal agent requests accept only agentName, safeGenerate/safeGenerat, "
+                "minimal agent requests accept only agentName, safeGenerate, "
                 "resultBase64, "
                 "and a recognized API-key field; unsupported keys: "
                 + ", ".join(sorted(extra))
@@ -177,10 +178,9 @@ def resolve_preset_request(request: Any, catalog_path: Path = CATALOG_PATH) -> d
         if preset_id is None:
             available = ", ".join(sorted(MINIMAL_AGENT_PRESETS))
             raise ConfigError(f"unsupported agentName; available agents: {available}")
-        safe_keys = [key for key in ("safeGenerate", "safeGenerat") if key in request]
-        if len(safe_keys) != 1:
-            raise ConfigError("minimal agent request requires exactly one safeGenerate field")
-        if request[safe_keys[0]] != "off":
+        if "safeGenerate" not in request:
+            raise ConfigError("minimal agent request requires safeGenerate")
+        if request["safeGenerate"] != "off":
             raise ConfigError("minimal agent request requires safeGenerate to be the string 'off'")
         if "resultBase64" in request and request["resultBase64"] is not True:
             raise ConfigError("minimal agent request requires resultBase64 to be true")
